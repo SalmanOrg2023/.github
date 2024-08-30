@@ -108,7 +108,11 @@ jobs:
         run: pip install ${{ github.event.inputs.packages }}
       
       - name: run script
-        run: ${{ github.event.inputs.script }}
+        run: |
+          script="${{ github.event.inputs.script }}"
+          echo "$script" > run_script.sh
+          chmod +x run_script.sh
+          ./run_script.sh
 
       
       - name: Verify that dependabot.yml was created
