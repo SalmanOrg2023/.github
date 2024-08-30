@@ -109,10 +109,35 @@ jobs:
       
       - name: run script
         run: |
-          script="${{ github.event.inputs.script }}"
-          echo "$script" > run_script.sh
-          chmod +x run_script.sh
-          ./run_script.sh
+          set -e
+          GITHUB_DIR=".github"
+          FILE_PATH="$GITHUB_DIR/dependabot.yml"
+
+          if [ -d "$GITHUB_DIR" ]; then
+            if [ -f "$FILE_PATH" ]; then
+              echo "dependabot.yml already exists. Updating its content..."
+            else
+              echo "dependabot.yml does not exist. Creating and configuring it..."
+            fi
+
+            cat <<EOL > $FILE_PATH
+            version: 2
+            updates:
+              # Adding new check for github-actions
+            - package-ecosystem: "github-actions"
+              directory: "/"
+              schedule:
+                  interval: "weekly"
+            EOL
+
+                      echo "dependabot.yml has been updated with the latest configuration."
+
+                      git add $FILE_PATH
+                      git commit -m "Add or update dependabot.yml"
+                      git push origin ${{ github.event.inputs.branch }}
+                    else
+                      echo "The .github directory does not exist. No actions were taken."
+                    fi
 
       
       - name: Verify that dependabot.yml was created
