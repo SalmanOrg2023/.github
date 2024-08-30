@@ -113,7 +113,7 @@ jobs:
       
       - name: Verify that dependabot.yml was created
         run: |
-          if [ -f ".github/dependabot.yml" ]; then
+          if [ -f ".github/.github/dependabot.yml" ]; then
             echo "File .github/dependabot.yml was successfully created."
           else
             echo "File .github/dependabot.yml was NOT created."
