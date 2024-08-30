@@ -106,9 +106,22 @@ jobs:
       - name: install packages
         if: ${{ github.event.inputs.packages }}
         run: pip install ${{ github.event.inputs.packages }}
+      
+      - name: Ensure script is executable
+        run: chmod +x ${{ github.event.inputs.script }}
 
       - name: run script
         run: ${{ github.event.inputs.script }}
+
+      
+      - name: Verify that dependabot.yml was created
+        run: |
+          if [ -f ".github/dependabot.yml" ]; then
+            echo "File .github/dependabot.yml was successfully created."
+          else
+            echo "File .github/dependabot.yml was NOT created."
+            exit 1  # Fail the job if the file does not exist
+          fi  
 
       - name: setup pull_request_creator
         run: |
@@ -129,6 +142,7 @@ jobs:
           GITHUB_USER_EMAIL: ${{ secrets.requirements_bot_github_email }}
         run: |
           echo "token ${{ secrets.requirements_bot_github_token }}"
+          echo "email ${{ secrets.requirements_bot_github_email }}"
           pull_request_creator --repo-root=$GITHUB_WORKSPACE \
           --target-branch="${{ env.BRANCH }}" --base-branch-name="${{ github.event.inputs.branch }}" \
           --commit-message="${{ github.event.inputs.commit_message }}" \
