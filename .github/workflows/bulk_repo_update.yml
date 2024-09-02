@@ -119,26 +119,24 @@ jobs:
             else
               echo "dependabot.yml does not exist. Creating and configuring it..."
             fi
-
+            
             cat <<EOL > $FILE_PATH
-            version: 2
-            updates:
-              # Adding new check for github-actions
-            - package-ecosystem: "github-actions"
-              directory: "/"
-              schedule:
-                  interval: "weekly"
-            EOL
+        version: 2
+        updates:
+          - package-ecosystem: "github-actions"
+            directory: "/"
+            schedule:
+              interval: "weekly"
+        EOL
 
-                      echo "dependabot.yml has been updated with the latest configuration."
+              echo "dependabot.yml has been updated with the latest configuration."
 
-                      git add $FILE_PATH
-                      git commit -m "Add or update dependabot.yml"
-                      git push origin ${{ github.event.inputs.branch }}
-                    else
-                      echo "The .github directory does not exist. No actions were taken."
-                    fi
-
+              git add $FILE_PATH
+              git commit -m "Add or update dependabot.yml"
+              git push origin ${{ github.event.inputs.branch }}
+            else
+              echo "The .github directory does not exist. No actions were taken."
+            fi
       
       - name: Verify that dependabot.yml was created
         run: |
